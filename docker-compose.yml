@@ -4,13 +4,9 @@ services:
     api:
         image: ch/api:latest
         container_name: ch-api
-        env_file: ./packages/api/.env
         build:
             context: ./packages/api
-            dockerfile: Dockerfile.dev
-        volumes:
-            - ./packages/api/src:/usr/app/src
-            - ./packages/api/nodemon.json:/usr/app/nodemon.json
+            dockerfile: Dockerfile
         ports:
             - "4000:4000"
         depends_on:
@@ -19,13 +15,8 @@ services:
     postgres-db:
         image: postgres:latest
         container_name: ch-psql
-        env_file: ./packages/api/.env
         ports:
             - "5432:5432"
-        environment:
-            POSTGRES_PASSWORD: password
-            POSTGRES_USER: postgres
-            POSTGRES_DB: coffee-house
         volumes:
             - db_data:/var/lib/postgresql/data
 

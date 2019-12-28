@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+    api:
+        env_file:
+            - ./packages/api/.env
+        environment:
+            - NODE_ENV=development
+        volumes:
+            - ./packages/api/src:/usr/app/src
+
+    postgres-db:
+        env_file:
+            - ./packages/api/.env
