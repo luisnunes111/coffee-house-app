@@ -12,6 +12,8 @@
 	},
 	"dependencies": {
 		"express": "^4.17.1",
+		"pg": "^7.16.1",
+		"reflect-metadata": "^0.1.13",
 		"typeorm": "^0.2.22",
 		"uuid": "^3.3.3"
 	},

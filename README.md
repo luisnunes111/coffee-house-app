@@ -1,5 +1,13 @@
 # coffee-house-app
 
+## API:
+
+[DEMO](http://100.24.46.157:4000/): Deploy in AWS EC2
+
+### Issues:
+
+-
+
 ## Docker commands:
 
 Development command:
