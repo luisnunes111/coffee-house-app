@@ -6,7 +6,6 @@ services:
         container_name: ch-api
         build:
             context: ./packages/api
-            dockerfile: Dockerfile
         ports:
             - "4000:4000"
         depends_on:
