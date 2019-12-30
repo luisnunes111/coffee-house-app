@@ -1,33 +1,23 @@
-import express, {Request, Response} from "express";
-import {createConnection} from "typeorm";
 import "reflect-metadata"; //typeorm dependecy
+import express, {Application} from "express";
+import connectPostgres from "./configs/postgres-connection";
+import bodyParser from "body-parser";
+import routes from "./routes";
 
-const PORT = 4000;
-const HOST = "0.0.0.0";
-
-console.log("env vars", process.env.POSTGRES_PASSWORD, process.env.POSTGRES_USER, process.env.POSTGRES_DB, process.env.NODE_ENV);
+const PORT = process.env.PORT;
 
 const startServer = async () => {
-	let retries = 5;
+	connectPostgres();
 
-	while (retries) {
-		try {
-			await createConnection();
-			break;
-		} catch (error) {
-			retries--;
-			console.log("retries: ", retries, "Error:", error);
-			await Promise.resolve((res: any) => setTimeout(res, 5000));
-		}
-	}
+	const app: Application = express();
+	app.use(bodyParser.json());
+	app.use(bodyParser.urlencoded({extended: true}));
 
-	const app = express();
-	app.get("/", (_: Request, res: Response) => {
-		res.send("Hello world 4\n");
-	});
+	routes(app);
 
-	app.listen(PORT, HOST);
-	console.log(`Running on http://${HOST}:${PORT}`);
+	app.listen(PORT, () => console.log(`api running on port: ${PORT}!\n`));
 };
+
+console.log("envs:", process.env);
 
 startServer();

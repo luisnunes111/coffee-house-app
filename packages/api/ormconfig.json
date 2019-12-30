@@ -1,21 +1,18 @@
-[
-	{
-		"name": "development",
-		"type": "postgres",
-		"host": "postgres-db",
-		"port": 5432,
-		"username": "postgres",
-		"password": "password",
-		"database": "coffee-house",
-		"synchronize": true,
-		"logging": true,
-		"entities": ["dist/src/entity/**/*.ts"],
-		"migrations": ["dist/src/migration/**/*.ts"],
-		"subscribers": ["dist/src/subscriber/**/*.ts"],
-		"cli": {
-			"entitiesDir": "dist/src/entity",
-			"migrationsDir": "dist/src/migration",
-			"subscribersDir": "dist/src/subscriber"
-		}
+{
+	"type": "postgres",
+	"host": "postgres-db",
+	"port": 5432,
+	"username": "postgres",
+	"password": "password",
+	"database": "coffee-house",
+	"synchronize": true,
+	"logging": true,
+	"entities": ["src/entity/*.ts"],
+	"migrations": ["src/migration/*.ts"],
+	"subscribers": ["src/subscriber/*.ts"],
+	"cli": {
+		"entitiesDir": "src/entity",
+		"migrationsDir": "src/migration",
+		"subscribersDir": "src/subscriber"
 	}
-]
+}

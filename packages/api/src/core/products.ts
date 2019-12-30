@@ -1,0 +1,7 @@
+const MAX_PACKETS_TEA = 600;
+const MAX_PACKETS_COFFEE = 200;
+
+export default {
+	MAX_PACKETS_TEA,
+	MAX_PACKETS_COFFEE,
+};

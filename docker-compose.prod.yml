@@ -5,12 +5,12 @@ services:
         build:
             dockerfile: Dockerfile.prod
         env_file:
-            - ./packages/api/.env
+            - ./packages/api/.env.production
         restart: always
         environment:
             - NODE_ENV=production
 
     postgres-db:
         env_file:
-            - ./packages/api/.env
+            - ./packages/api/.env.production
         restart: always
