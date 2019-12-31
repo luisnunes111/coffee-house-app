@@ -1,4 +1,5 @@
 {
+	"name": "development",
 	"type": "postgres",
 	"host": "postgres-db",
 	"port": 5432,

@@ -18,13 +18,13 @@ export class Product extends BaseEntity {
 	description: string;
 
 	@Column("int")
-	Quantity: number;
+	quantity: number;
 
 	@Column("int")
-	Type: ProductType;
+	type: ProductType;
 
 	@Column("varchar", {length: 255, nullable: true})
-	ImageId: string;
+	image_name: string;
 
 	@BeforeInsert()
 	addId() {

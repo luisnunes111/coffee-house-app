@@ -1,4 +1,4 @@
-import "reflect-metadata"; //typeorm dependecy
+import "reflect-metadata"; // typeorm dependecy
 import express, {Application} from "express";
 import connectPostgres from "./configs/postgres-connection";
 import bodyParser from "body-parser";
@@ -18,6 +18,6 @@ const startServer = async () => {
 	app.listen(PORT, () => console.log(`api running on port: ${PORT}!\n`));
 };
 
-console.log("envs:", process.env);
+// console.log("envs:", process.env);
 
 startServer();

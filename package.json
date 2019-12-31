@@ -1,9 +1,0 @@
-{
-	"repository": "https://github.com/luisnunes111/coffee-house-app.git",
-	"author": "luis.soares.nunes95@gmail.com",
-	"license": "MIT",
-	"private": true,
-	"workspaces": [
-		"packages/*"
-	]
-}

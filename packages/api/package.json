@@ -16,13 +16,15 @@
 		"pg": "^7.16.1",
 		"reflect-metadata": "^0.1.13",
 		"typeorm": "^0.2.22",
-		"uuid": "^3.3.3"
+		"uuid": "^3.3.3",
+		"yup": "^0.28.0"
 	},
 	"devDependencies": {
 		"@types/express": "^4.17.2",
 		"@types/jest": "^24.0.25",
 		"@types/node": "^13.1.1",
 		"@types/uuid": "^3.4.6",
+		"@types/yup": "^0.26.27",
 		"jest": "^24.9.0",
 		"nodemon": "^2.0.2",
 		"ts-jest": "^24.2.0",

@@ -1,36 +1,53 @@
 import {Request, Response} from "express";
-import {getManager} from "typeorm";
-import {Product} from "../../entity/Product";
+import {errors} from "../../utils/serverErrors";
+import productValidation from "../../utils/validations/product";
+import productRepository from "../repositories/products";
+import {IProductCreateRequest} from "../types/products/request";
 
-async function getAll(req: Request, res: Response) {
-	const productRepository = getManager().getRepository(Product);
-	const products = await productRepository.find();
-	res.send(products);
+async function getAll(_: Request, res: Response) {
+	try {
+		const products = await productRepository.getAll();
+		res.send(products);
+	} catch (error) {
+		res.status(500);
+		res.send({success: false, error: errors.generic500});
+	}
 }
 
 async function getOne(req: Request, res: Response) {
-	const {id} = req.params;
+	try {
+		const {id} = req.params;
+		const product = await productRepository.getOne(id);
 
-	const productRepository = getManager().getRepository(Product);
-	const product = await productRepository.findOne(id);
+		if (!product) {
+			res.status(404);
+			res.send({success: false, error: errors.generic404});
+			return;
+		}
 
-	if (!product) {
-		res.status(404);
-		res.end();
-		return;
+		res.send(product);
+	} catch (error) {
+		res.status(500);
+		res.send({success: false, error: errors.generic500});
 	}
-
-	res.send(product);
 }
 
 async function createOne(req: Request, res: Response) {
-	const productRepository = getManager().getRepository(Product);
+	try {
+		let isValid = await productValidation.isValid(req.body as IProductCreateRequest);
 
-	const newPost = productRepository.create(req.body);
+		if (!isValid) {
+			res.status(400);
+			res.send({success: false, error: errors.generic400});
+			return;
+		}
 
-	await productRepository.save(newPost);
-
-	res.send(newPost);
+		const newPost = await productRepository.createOne(req.body as IProductCreateRequest);
+		res.send(newPost);
+	} catch (error) {
+		res.status(500);
+		res.send({success: false, error: errors.generic500});
+	}
 }
 
 function deleteOne(req: Request, res: Response) {}
