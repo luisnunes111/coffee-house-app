@@ -1,4 +1,4 @@
-import {Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BaseEntity} from "typeorm";
+import {Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BaseEntity, CreateDateColumn, UpdateDateColumn} from "typeorm";
 import {v4} from "uuid";
 
 export enum ProductType {
@@ -8,6 +8,11 @@ export enum ProductType {
 
 @Entity()
 export class Product extends BaseEntity {
+	constructor(props: any) {
+		super();
+		Object.assign(this, props);
+	}
+
 	@PrimaryGeneratedColumn("uuid")
 	id: string;
 
@@ -25,6 +30,12 @@ export class Product extends BaseEntity {
 
 	@Column("varchar", {length: 255, nullable: true})
 	image_name: string;
+
+	@CreateDateColumn()
+	created_at: Date;
+
+	@UpdateDateColumn()
+	updated_at: Date;
 
 	@BeforeInsert()
 	addId() {

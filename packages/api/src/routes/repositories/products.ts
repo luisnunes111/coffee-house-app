@@ -1,6 +1,6 @@
 import {getManager} from "typeorm";
 import {Product} from "../../entity/Product";
-import {IProductCreateRequest} from "../types/products/request";
+import {IProductCreateRequest, IProductUpdateRequest} from "../types/products/request";
 
 async function getAll() {
 	const productRepository = getManager().getRepository(Product);
@@ -8,16 +8,20 @@ async function getAll() {
 }
 
 async function getOne(id: string) {
-	const productRepository = getManager().getRepository(Product);
-	const product = await productRepository.findOne(id);
-
-	return product;
-}
-
-async function createOne(product: IProductCreateRequest) {
 	try {
 		const productRepository = getManager().getRepository(Product);
-		const newPost = productRepository.create(product);
+		const product = await productRepository.findOne(id);
+
+		return product;
+	} catch (error) {
+		return null;
+	}
+}
+
+async function createOne(item: IProductCreateRequest) {
+	try {
+		const productRepository = getManager().getRepository(Product);
+		const newPost = productRepository.create(item);
 
 		await productRepository.save(newPost);
 		return newPost;
@@ -26,9 +30,34 @@ async function createOne(product: IProductCreateRequest) {
 	}
 }
 
-function deleteOne() {}
+async function deleteOne(id: string) {
+	try {
+		const productRepository = getManager().getRepository(Product);
+		const result = await productRepository.delete(id);
+		if (result.affected == 1) {
+			return true;
+		}
+	} catch (error) {
+		console.log(error);
+	}
+	return false;
+}
 
-function updateOne() {}
+async function updateOne(id: string, item: IProductUpdateRequest) {
+	try {
+		const productRepository = getManager().getRepository(Product);
+
+		const newProduct = new Product(item);
+		console.log(newProduct, item);
+		const result = await productRepository.update(id, newProduct);
+		if (result.affected === 1) {
+			return await getOne(id);
+		}
+	} catch (error) {
+		console.log(error);
+	}
+	return null;
+}
 
 export default {
 	getAll,
