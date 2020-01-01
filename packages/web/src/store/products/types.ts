@@ -20,4 +20,4 @@ interface SetProductsLoadingAction {
 	payload: boolean;
 }
 
-export type ApplicationsActionTypes = SetProductsAction | SetProductsLoadingAction | SetProductsErrorAction;
+export type ProductsActionTypes = SetProductsAction | SetProductsLoadingAction | SetProductsErrorAction;

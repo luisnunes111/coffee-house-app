@@ -1,13 +1,12 @@
+import {APIClient} from "..";
+
 /**
- * Get applications List
+ * Get products List
  */
-const getList = (): Utils.ApiResponse<Models.IProductsList> | null => {
-	try {
-		//get results
-	} catch (error) {}
-	return null;
+const getAll = async (): Promise<Utils.ApiResponse<Models.IProductsList>> => {
+	return await APIClient.request<Models.IProductsList>("/products");
 };
 
 export default {
-	getAll: getList,
+	getAll: getAll,
 };

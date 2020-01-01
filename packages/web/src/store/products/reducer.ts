@@ -1,10 +1,10 @@
 import {productsInitialState, SET_PRODUCTS_ACTION, SET_PRODUCTS_ERROR_ACTION, SET_PRODUCTS_LOADING_ACTION} from "./constants";
-import {ApplicationsActionTypes, IProductsState} from "./types";
+import {ProductsActionTypes, IProductsState} from "./types";
 
-export default (state = productsInitialState, action: ApplicationsActionTypes): IProductsState => {
+export default (state = productsInitialState, action: ProductsActionTypes): IProductsState => {
 	switch (action.type) {
 		case SET_PRODUCTS_ACTION: {
-			return {...state, ...action.payload.data, error: null};
+			return {...state, items: action.payload.data, error: null};
 		}
 		case SET_PRODUCTS_LOADING_ACTION: {
 			return {...state, loading: action.payload};
