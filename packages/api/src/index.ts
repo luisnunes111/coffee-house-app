@@ -1,8 +1,9 @@
 import "reflect-metadata"; // typeorm dependecy
 import express, {Application} from "express";
-import connectPostgres from "./configs/postgres-connection";
 import bodyParser from "body-parser";
+import cors from "cors";
 import routes from "./routes";
+import connectPostgres from "./configs/postgres-connection";
 
 const PORT = process.env.PORT;
 
@@ -12,6 +13,11 @@ const startServer = async () => {
 	const app: Application = express();
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended: true}));
+
+	if (process.env.NODE_ENV === "development") {
+		app.use(cors());
+		app.options("*", cors());
+	}
 
 	routes(app);
 
