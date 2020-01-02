@@ -1,17 +1,51 @@
+import {Button, PageHeader, Table, Tag} from "antd";
 import React, {useEffect} from "react";
-import {useSelector, useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {RouteComponentProps} from "react-router-dom";
 import {AppState} from "../../configurations/redux";
-import {RouteProps} from "react-router-dom";
 import {loadProductsAction} from "../../store/products/actions";
-import {Button} from "antd";
+import {withPageTemplate} from "../../utils/withTemplate";
+import {getProductType, ProductType} from "./utils/typeConversion";
 
-const ListPage: React.FC<RouteProps> = React.memo(_ => {
+const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 	const {items, error, loading} = useSelector((state: AppState) => state.products);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(loadProductsAction());
 	}, []);
+
+	return (
+		<>
+			<PageHeader
+				ghost={false}
+				onBack={() => props.history.goBack()}
+				title="Products List"
+				extra={[
+					<Button key="2">Export</Button>,
+					<Button key="1" type="primary" onClick={() => props.history.push("/products/create")}>
+						Create Product
+					</Button>,
+				]}
+			/>
+			<div style={{margin: "20px 10% 0 10%"}}>
+				<ListContent items={items} error={error} loading={loading} push={props.history.push} />
+			</div>
+		</>
+	);
+});
+
+export default withPageTemplate(ListPage);
+
+interface IListContent {
+	items: Models.IProductsList | null;
+	error: string | null | undefined;
+	loading: boolean;
+	push: (path: string, state?: any) => void;
+}
+
+const ListContent: React.FC<IListContent> = React.memo(props => {
+	const {error, items, push} = props;
 
 	if (error) {
 		return (
@@ -26,17 +60,43 @@ const ListPage: React.FC<RouteProps> = React.memo(_ => {
 		return <p>No Products were found.</p>;
 	} else {
 		return (
-			<>
-				<Button type="primary">Button</Button>
-				<ul>
-					{items.map((item: any, i: number) => (
-						// <ProductItem key={item.id} data={item} />
-						<div>{i}</div>
-					))}
-				</ul>
-			</>
+			<Table
+				columns={columns}
+				dataSource={items}
+				rowKey={record => record.id}
+				onRow={(record, rowIndex) => {
+					return {
+						onClick: event => {
+							push("/product/" + record.id);
+						},
+					};
+				}}
+			/>
 		);
 	}
 });
 
-export default ListPage;
+const columns = [
+	{
+		title: "Name",
+		dataIndex: "name",
+		key: "name",
+	},
+	{
+		title: "Quantity",
+		dataIndex: "quantity",
+		key: "quantity",
+	},
+	{
+		title: "Type",
+		key: "type",
+		dataIndex: "type",
+		render: (type: ProductType) => <Tag color={type === 0 ? "geekblue" : "green"}>{getProductType(type)}</Tag>,
+	},
+	{
+		title: "Timestamp",
+		key: "date",
+		dataIndex: "updated_at",
+		render: (date: string) => <span>{new Date(date).toLocaleString()}</span>,
+	},
+];
