@@ -1,6 +1,8 @@
 import {Application, Request, Response} from "express";
 import products from "./controllers/products";
 import users from "./controllers/users";
+import {isAuth} from "./middlewares/isAuth";
+import notifications from "./controllers/notifications";
 
 export default (app: Application) => {
 	app.get("/", (_: Request, res: Response) => {
@@ -9,11 +11,14 @@ export default (app: Application) => {
 
 	app.post("/login", users.login);
 	app.post("/register", users.register);
-	app.post("/logout", users.logout);
+	app.post("/logout", isAuth, users.logout);
+	app.get("/refresh_token", users.refreshToken);
 
-	app.post("/product", products.createOne);
-	app.get("/products", products.getAll);
-	app.get("/product/:id", products.getOne);
-	app.put("/product/:id", products.updateOne);
-	app.delete("/product/:id", products.deleteOne);
+	app.post("/product", isAuth, products.createOne);
+	app.get("/products", isAuth, products.getAll);
+	app.get("/product/:id", isAuth, products.getOne);
+	app.put("/product/:id", isAuth, products.updateOne);
+	app.delete("/product/:id", isAuth, products.deleteOne);
+
+	app.get("/notifications", isAuth, notifications.getAll);
 };

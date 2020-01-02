@@ -14,7 +14,7 @@ async function login(data: IUserLoginRequest) {
 	const valid = await compare(data.password, user.password);
 
 	if (!valid) {
-		return {success: false, status: 400, msg: msgs.passwordIncorrect};
+		return {success: false, status: 403, msg: msgs.passwordIncorrect};
 	}
 
 	return {

@@ -3,6 +3,16 @@ import {User} from "../entity/User";
 import {Response} from "express";
 import {IUserLogin} from "../routes/types/users/response";
 
+export interface ITokenPayload {
+	userId: string;
+	iat: number;
+	exp: number;
+}
+
+export interface IRefreshTokenPayload extends ITokenPayload {
+	tokenVersion: number;
+}
+
 export const createAccessToken = (user: IUserLogin) =>
 	sign({userId: user.id}, process.env.ACCESS_TOKEN_SECRET!, {
 		expiresIn: "15m",
