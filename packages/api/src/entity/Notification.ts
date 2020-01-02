@@ -12,10 +12,21 @@ import {
 } from "typeorm";
 import {v4} from "uuid";
 import {User} from "./User";
+import {Product} from "./Product";
+
+export enum NotificationType {
+	LOW_STOCK = 0,
+	REFILL_DONE = 1,
+}
+
+export interface INotificationDescription {
+	quantityBefore: number;
+	quantityAfter: number;
+}
 
 @Entity()
 export class Notification extends BaseEntity {
-	constructor(props: any) {
+	constructor(props: Partial<Notification>) {
 		super();
 		Object.assign(this, props);
 	}
@@ -26,15 +37,35 @@ export class Notification extends BaseEntity {
 	@Column("text")
 	message: string;
 
+	@Column("simple-json")
+	description: INotificationDescription;
+
+	@Column("boolean", {default: false})
+	is_read: boolean;
+
+	@Column("int")
+	type: NotificationType;
+
 	@ManyToOne(
 		_ => User,
-		user => user.notifications,
+		user => user.to_notifications,
+		{cascade: true},
 	)
 	to_user: User;
 
-	@OneToOne(_ => User)
-	@JoinColumn()
-	from_user: User;
+	@ManyToOne(
+		_ => User,
+		user => user.from_notifications,
+		{cascade: true},
+	)
+	from_user: User | null;
+
+	@ManyToOne(
+		_ => Product,
+		product => product.product_notifications,
+		{cascade: true},
+	)
+	product: Product;
 
 	@CreateDateColumn()
 	created_at: Date;
@@ -47,5 +78,3 @@ export class Notification extends BaseEntity {
 		this.id = v4();
 	}
 }
-
-//notification every time the stock is refilled (This notification must include the name of the employee who updated the stock.)

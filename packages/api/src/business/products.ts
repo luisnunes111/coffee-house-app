@@ -1,5 +1,0 @@
-export default {
-	MAX_PACKETS_TEA: 600,
-	MAX_PACKETS_COFFEE: 200,
-	PRODUCT_THRESHOLD: 45,
-};

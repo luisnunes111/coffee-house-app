@@ -7,4 +7,6 @@ export const msgs = {
 	emailInvalid: "Email format is incorrect",
 	duplicateEmail: "This email is already picked",
 	refreshTokenNotValid: "Refresh token is not valid",
+	notificationsRefill: "Product stock has been refilled.",
+	notificationsMissingUnits: "Product is low in stock.",
 };

@@ -1,5 +1,16 @@
-import {Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BaseEntity, CreateDateColumn, UpdateDateColumn} from "typeorm";
+import {
+	Entity,
+	Column,
+	PrimaryGeneratedColumn,
+	BeforeInsert,
+	BaseEntity,
+	CreateDateColumn,
+	UpdateDateColumn,
+	Index,
+	OneToMany,
+} from "typeorm";
 import {v4} from "uuid";
+import {Notification} from "./Notification";
 
 export enum ProductType {
 	TEA = 0,
@@ -36,6 +47,12 @@ export class Product extends BaseEntity {
 
 	@UpdateDateColumn()
 	updated_at: Date;
+
+	@OneToMany(
+		_ => Notification,
+		n => n.product,
+	)
+	product_notifications: Notification[];
 
 	@BeforeInsert()
 	addId() {

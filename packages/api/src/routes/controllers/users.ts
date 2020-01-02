@@ -7,6 +7,7 @@ import {setRefreshToken, createRefreshToken, createAccessToken, ITokenPayload, I
 import {ILoginResponse, IUserLogin} from "../types/users/response";
 import {verify} from "jsonwebtoken";
 import {User} from "../../entity/User";
+import {getRepository} from "typeorm";
 
 async function login(req: Request, res: Response) {
 	try {
@@ -32,6 +33,7 @@ async function login(req: Request, res: Response) {
 		};
 		res.send({success: true, data: response});
 	} catch (error) {
+		console.log(error);
 		res.status(500).send({success: false, error: msgs.generic500});
 	}
 }
@@ -81,7 +83,11 @@ async function refreshToken(req: Request, res: Response) {
 	}
 
 	// valid token, so we send new access token and update the refresh token
-	const user = await User.findOne({id: payload.userId});
+	const user = await getRepository(User)
+		.createQueryBuilder("user")
+		.where("user.id = :id", {id: payload.userId})
+		.addSelect("user.tokenVersion")
+		.getOne();
 
 	if (!user) {
 		return res.status(404).send({success: false, error: "user" + msgs.generic404});
@@ -96,9 +102,22 @@ async function refreshToken(req: Request, res: Response) {
 	return res.send({ok: true, accessToken: createAccessToken(user)});
 }
 
+async function getAll(req: Request, res: Response) {
+	try {
+		const result = await userRepository.getAll();
+		if (result) {
+			return res.send({success: true, data: result});
+		}
+	} catch (error) {
+		return res.status(500).send({success: false, error: msgs.generic500});
+	}
+	return res.send({success: false});
+}
+
 export default {
 	login,
 	register,
 	logout,
 	refreshToken,
+	getAll,
 };

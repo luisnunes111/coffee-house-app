@@ -23,13 +23,13 @@ export class User extends BaseEntity {
 	@Column("varchar", {length: 255})
 	email: string;
 
-	@Column("varchar", {length: 255})
+	@Column("varchar", {length: 255, select: false})
 	password: string;
 
-	@Column("int", {default: 0})
+	@Column("int", {default: 0, select: false})
 	tokenVersion: number;
 
-	@Column("varchar")
+	@Column("varchar", {select: false})
 	role: UserRole;
 
 	@CreateDateColumn()
@@ -42,7 +42,13 @@ export class User extends BaseEntity {
 		_ => Notification,
 		n => n.to_user,
 	)
-	notifications: Notification[];
+	to_notifications: Notification[];
+
+	@OneToMany(
+		_ => Notification,
+		n => n.from_user,
+	)
+	from_notifications: Notification[];
 
 	@BeforeInsert()
 	addId() {

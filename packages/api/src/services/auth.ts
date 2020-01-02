@@ -15,7 +15,7 @@ export interface IRefreshTokenPayload extends ITokenPayload {
 
 export const createAccessToken = (user: IUserLogin) =>
 	sign({userId: user.id}, process.env.ACCESS_TOKEN_SECRET!, {
-		expiresIn: "15m",
+		expiresIn: "10h",
 	});
 
 export const createRefreshToken = (user: User) => {
