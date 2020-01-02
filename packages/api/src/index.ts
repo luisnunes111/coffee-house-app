@@ -8,9 +8,9 @@ import connectPostgres from "./configs/postgres-connection";
 const PORT = process.env.PORT;
 
 const startServer = async () => {
+	const app: Application = express();
 	connectPostgres();
 
-	const app: Application = express();
 	app.use(bodyParser.json());
 	app.use(bodyParser.urlencoded({extended: true}));
 

@@ -2,8 +2,8 @@ import {Entity, Column, PrimaryGeneratedColumn, BeforeInsert, BaseEntity, Create
 import {v4} from "uuid";
 
 export enum ProductType {
-	TEA,
-	COFFEE,
+	TEA = 0,
+	COFFEE = 1,
 }
 
 @Entity()
