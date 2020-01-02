@@ -10,9 +10,9 @@ import {ITokenPayload} from "../../services/auth";
 async function getAll(_: Request, res: Response) {
 	try {
 		const products = await productRepository.getAll();
-		res.send({success: true, data: products});
+		return res.send({success: true, data: products});
 	} catch (error) {
-		res.status(500).send({success: false, error: msgs.generic500});
+		return res.status(500).send({success: false, error: msgs.generic500});
 	}
 }
 
@@ -22,18 +22,16 @@ async function getOne(req: Request, res: Response) {
 		const product = await productRepository.getOne(id);
 
 		if (id == null || id === "") {
-			res.status(400).send({success: false, error: msgs.generic400});
-			return;
+			return res.status(400).send({success: false, error: msgs.generic400});
 		}
 
 		if (!product) {
-			res.status(404).send({success: false, error: msgs.generic404});
-			return;
+			return res.status(404).send({success: false, error: msgs.generic404});
 		}
 
-		res.send({success: true, data: product});
+		return res.send({success: true, data: product});
 	} catch (error) {
-		res.status(500).send({success: false, error: msgs.generic500});
+		return res.status(500).send({success: false, error: msgs.generic500});
 	}
 }
 
@@ -42,14 +40,13 @@ async function createOne(req: Request, res: Response) {
 		let isValid = await productValidation.isValid(req.body as IProductCreateRequest);
 
 		if (!isValid) {
-			res.status(400).send({success: false, error: msgs.generic400});
-			return;
+			return res.status(400).send({success: false, error: msgs.generic400});
 		}
 
 		const newPost = await productRepository.createOne(req.body as IProductCreateRequest);
-		res.status(201).send({success: true, data: newPost});
+		return res.status(201).send({success: true, data: newPost});
 	} catch (error) {
-		res.status(500).send({success: false, error: msgs.generic500});
+		return res.status(500).send({success: false, error: msgs.generic500});
 	}
 }
 
@@ -58,19 +55,18 @@ async function deleteOne(req: Request, res: Response) {
 		const {id} = req.params;
 
 		if (id == null || id === "") {
-			res.status(400).send({success: false, error: msgs.generic400});
-			return;
+			return res.status(400).send({success: false, error: msgs.generic400});
 		}
 
 		const result = await productRepository.deleteOne(id);
 		if (result) {
-			res.send({success: true});
-			return;
+			return res.send({success: true});
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({success: false, error: msgs.generic500});
 	}
-	res.status(500).send({success: false, error: msgs.generic500});
+	return res.status(500).send({success: false});
 }
 
 async function updateOne(req: Request, res: Response) {
@@ -113,7 +109,7 @@ export function exportList(req: Request, res: Response) {
 	} catch (error) {
 		console.log(error);
 	}
-	res.status(500).send({success: false, error: msgs.generic500});
+	return res.status(500).send({success: false, error: msgs.generic500});
 }
 
 export default {

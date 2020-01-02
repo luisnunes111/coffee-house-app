@@ -4,6 +4,17 @@ import {User} from "../../entity/User";
 import {msgs} from "../../utils/responseMsgs";
 import {Product} from "../../entity/Product";
 
+async function getOne(id: string) {
+	try {
+		const notificationsRepository = getManager().getRepository(Notification);
+		const notification = await notificationsRepository.findOne(id);
+
+		return notification;
+	} catch (error) {
+		return null;
+	}
+}
+
 async function getAll() {
 	const notificationsRepository = getManager().getRepository(Notification);
 	try {
@@ -32,19 +43,28 @@ async function geAllById(userId: string) {
 async function updateNotification(id: string) {
 	try {
 		const notificationsRepository = getManager().getRepository(Notification);
-		return await notificationsRepository.find();
+		const notif = new Notification({is_read: true});
+		const result = await notificationsRepository.update(id, notif);
+		if (result.affected === 1) {
+			return true;
+		}
 	} catch (error) {
-		return null;
+		console.log(error);
 	}
+	return false;
 }
 
 async function deleteNotification(id: string) {
 	try {
 		const notificationsRepository = getManager().getRepository(Notification);
-		return await notificationsRepository.find();
+		const result = await notificationsRepository.delete(id);
+		if (result.affected == 1) {
+			return true;
+		}
 	} catch (error) {
-		return null;
+		console.log(error);
 	}
+	return false;
 }
 
 export interface ICreateNotification {

@@ -11,9 +11,10 @@ async function getAll(req: Request, res: Response) {
 			return res.send({success: true, data: result});
 		}
 	} catch (error) {
+		console.log(error);
 		return res.status(500).send({success: false, error: msgs.generic500});
 	}
-	return res.send({success: false});
+	return res.status(500).send({success: false});
 }
 
 async function getUserNotifications(req: Request, res: Response) {
@@ -25,9 +26,10 @@ async function getUserNotifications(req: Request, res: Response) {
 			return res.send({success: true, data: result});
 		}
 	} catch (error) {
+		console.log(error);
 		return res.status(500).send({success: false, error: msgs.generic500});
 	}
-	return res.send({success: false});
+	return res.status(500).send({success: false});
 }
 
 async function updateNotification(req: Request, res: Response) {
@@ -39,12 +41,13 @@ async function updateNotification(req: Request, res: Response) {
 		}
 		const result = await notifications.updateNotification(id);
 		if (result) {
-			return res.send({success: true, data: result});
+			return res.send({success: true});
 		}
 	} catch (error) {
+		console.log(error);
 		return res.status(500).send({success: false, error: msgs.generic500});
 	}
-	return res.send({success: false});
+	return res.status(500).send({success: false});
 }
 
 async function deleteNotification(req: Request, res: Response) {
@@ -54,14 +57,15 @@ async function deleteNotification(req: Request, res: Response) {
 		if (id == null || id === "") {
 			return res.status(400).send({success: false, error: msgs.generic400});
 		}
-		const result = await notifications.updateNotification(id);
+		const result = await notifications.deleteNotification(id);
 		if (result) {
-			return res.send({success: true, data: result});
+			return res.send({success: true});
 		}
 	} catch (error) {
+		console.log(error);
 		return res.status(500).send({success: false, error: msgs.generic500});
 	}
-	return res.send({success: false});
+	return res.status(500).send({success: false});
 }
 
 export default {
