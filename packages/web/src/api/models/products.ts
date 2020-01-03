@@ -36,10 +36,13 @@ const deleteIt = async (id: string): Promise<Utils.ApiResponse<null>> => {
 };
 
 /**
- * Export list of products (TODO)
+ * Export list of products
  */
 const exportFile = async (): Promise<Utils.ApiResponse<null>> => {
-	return await APIClient.request<null>("/products/exports");
+	return await APIClient.request<null>("/products/export", {
+		// headers: {"Content-Type": "application/octet-stream"},
+		responseType: "blob",
+	});
 };
 
 export default {

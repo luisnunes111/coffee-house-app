@@ -1,4 +1,4 @@
-import {Button, PageHeader, Table, Tag, Badge, Spin} from "antd";
+import {Button, PageHeader, Table, Tag, Badge, Spin, message} from "antd";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RouteComponentProps} from "react-router-dom";
@@ -7,6 +7,7 @@ import {loadProductsAction} from "../../store/products/actions";
 import {withPageTemplate} from "../../utils/withTemplate";
 import {getProductType, ProductType} from "./utils/typeConversion";
 import {UserRole} from "../../utils/validations/register";
+import API from "../../api";
 
 const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 	const {items, error, loading} = useSelector((state: AppState) => state.products);
@@ -17,6 +18,20 @@ const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 		dispatch(loadProductsAction());
 	}, []);
 
+	const _exportFile = async () => {
+		const res = await API.products.exportFile();
+		try {
+			const url = window.URL.createObjectURL(new Blob([res as any]));
+			const link = document.createElement("a");
+			link.href = url;
+			link.setAttribute("download", "file.csv");
+			document.body.appendChild(link);
+			link.click();
+		} catch (error) {
+			console.log(error);
+			message.info("Could not download file");
+		}
+	};
 	return (
 		<>
 			<PageHeader
@@ -24,7 +39,9 @@ const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 				onBack={() => props.history.goBack()}
 				title="Products List"
 				extra={[
-					<Button key="2">Export</Button>,
+					<Button key="2" onClick={_exportFile}>
+						Export
+					</Button>,
 					data?.role === UserRole.Manager && (
 						<Button key="1" type="primary" onClick={() => props.history.push("/products/create")}>
 							Create Product
