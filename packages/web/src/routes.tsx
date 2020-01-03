@@ -4,13 +4,13 @@ import {AppState} from "./configurations/redux";
 import {useSelector} from "react-redux";
 import {UserRole} from "./utils/validations/register";
 
-const NotificationsPage = lazy(() => import("./pages/Notifications"));
-const ProductsListPage = lazy(() => import("./pages/products/List"));
-const ProductsCreatePage = lazy(() => import("./pages/products/Create"));
-const ProductsUpdatePage = lazy(() => import("./pages/products/Update"));
-const ProductsDetailsPage = lazy(() => import("./pages/products/Details"));
-const LoginPage = lazy(() => import("./pages/Login"));
-const RegisterPage = lazy(() => import("./pages/Register"));
+import NotificationsPage from "./pages/Notifications";
+import ProductsListPage from "./pages/products/List";
+import ProductsCreatePage from "./pages/products/Create";
+import ProductsUpdatePage from "./pages/products/Update";
+import ProductsDetailsPage from "./pages/products/Details";
+import LoginPage from "./pages/Login";
+import RegisterPage from "./pages/Register";
 
 export const Routes: React.FC = React.memo(() => {
 	return (
