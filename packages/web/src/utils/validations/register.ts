@@ -1,6 +1,10 @@
 import * as yup from "yup";
 import validationMsgs from "./messages";
-import {UserRole} from "../../pages/Register";
+
+export enum UserRole {
+	Employee = "employee",
+	Manager = "manager",
+}
 
 export default yup.object().shape({
 	email: yup

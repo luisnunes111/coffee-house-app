@@ -6,16 +6,18 @@ import {AppState} from "../../configurations/redux";
 import {withPageTemplate} from "../../utils/withTemplate";
 import API from "../../api";
 import {getProductType} from "./utils/typeConversion";
+import {UserRole} from "../../utils/validations/register";
 
 const DetailsPage: React.FC<RouteComponentProps> = React.memo(props => {
 	const {id} = useParams();
 	const [data, setData] = useState<Models.IProductListItem | null>();
 	const [modalVisible, setModalVisible] = useState(false);
 	const [confirmLoading, setConfirmLoading] = useState(false);
+	const {data: user} = useSelector((state: AppState) => state.user);
 
 	useEffect(() => {
 		API.products.details(id!).then(r => r.success && setData(r.data));
-	});
+	}, []);
 
 	const _handleModalOk = async () => {
 		setConfirmLoading(true);
@@ -57,9 +59,11 @@ const DetailsPage: React.FC<RouteComponentProps> = React.memo(props => {
 				onBack={() => props.history.goBack()}
 				title="Product Details"
 				extra={[
-					<Button key="1" onClick={() => _showModal()}>
-						Delete
-					</Button>,
+					user?.role === UserRole.Manager && (
+						<Button key="1" onClick={() => _showModal()}>
+							Delete
+						</Button>
+					),
 					<Button key="2" type="primary" onClick={() => props.history.push(`/product/${id}/update/`)}>
 						Update
 					</Button>,

@@ -6,9 +6,11 @@ import {AppState} from "../../configurations/redux";
 import {loadProductsAction} from "../../store/products/actions";
 import {withPageTemplate} from "../../utils/withTemplate";
 import {getProductType, ProductType} from "./utils/typeConversion";
+import {UserRole} from "../../utils/validations/register";
 
 const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 	const {items, error, loading} = useSelector((state: AppState) => state.products);
+	const {data} = useSelector((state: AppState) => state.user);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -23,9 +25,11 @@ const ListPage: React.FC<RouteComponentProps> = React.memo(props => {
 				title="Products List"
 				extra={[
 					<Button key="2">Export</Button>,
-					<Button key="1" type="primary" onClick={() => props.history.push("/products/create")}>
-						Create Product
-					</Button>,
+					data?.role === UserRole.Manager && (
+						<Button key="1" type="primary" onClick={() => props.history.push("/products/create")}>
+							Create Product
+						</Button>
+					),
 				]}
 			/>
 			<div style={{margin: "20px 10% 0 10%"}}>

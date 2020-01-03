@@ -41,12 +41,10 @@ declare namespace Models {
 	interface INotificationListItem {
 		id: string;
 		message: string;
-		description:
-			| string
-			| {
-					quantityBefore: number;
-					quantityAfter: number;
-			  };
+		description: {
+			quantityBefore: number;
+			quantityAfter: number;
+		};
 		is_read: boolean;
 		type: NotificationType;
 		created_at: string;

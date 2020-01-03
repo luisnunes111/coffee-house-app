@@ -1,5 +1,8 @@
 import React, {lazy} from "react";
 import {Route, Switch, Redirect, RouteProps} from "react-router-dom";
+import {AppState} from "./configurations/redux";
+import {useSelector} from "react-redux";
+import {UserRole} from "./utils/validations/register";
 
 const NotificationsPage = lazy(() => import("./pages/Notifications"));
 const ProductsListPage = lazy(() => import("./pages/products/List"));
@@ -14,11 +17,11 @@ export const Routes: React.FC = React.memo(() => {
 		<Switch>
 			<Route exact={true} path="/" component={LoginPage} />
 			<Route exact={true} path="/register" component={RegisterPage} />
-			<Route exact={true} path="/products" component={ProductsListPage} />
-			<Route exact={true} path="/products/create" component={ProductsCreatePage} />
-			<Route exact={true} path="/product/:id/update" component={ProductsUpdatePage} />
-			<Route exact={true} path="/product/:id/details" component={ProductsDetailsPage} />
-			<Route exact={true} path="/notifications" component={NotificationsPage} />
+			<AuthorizedRoute exact={true} path="/products" component={ProductsListPage} />
+			<AuthorizedRoute role={UserRole.Manager} exact={true} path="/products/create" component={ProductsCreatePage} />
+			<AuthorizedRoute exact={true} path="/product/:id/update" component={ProductsUpdatePage} />
+			<AuthorizedRoute exact={true} path="/product/:id/details" component={ProductsDetailsPage} />
+			<AuthorizedRoute exact={true} path="/notifications" component={NotificationsPage} />
 			<Route path="*" component={NotFoundPage} />
 		</Switch>
 	);
@@ -27,18 +30,13 @@ export const Routes: React.FC = React.memo(() => {
 /**
  * Routes that require a log in and optionally some roles
  */
-const AuthorizedRoute = ({roles, ...rest}: {roles?: number[]} & RouteProps) => {
-	// const user = useSelector((state: AppState) => state.user)
+const AuthorizedRoute = ({role, ...rest}: {role?: UserRole} & RouteProps) => {
+	const user = useSelector((state: AppState) => state.user);
 
-	// const isAuthenticated = user.id != null
+	const isAuthenticated = user.data?.id != null;
 
-	// const areRolesRequired = roles != null && roles.length > 0
-	// const areRolesValid = areRolesRequired && user.roles && user.roles.every(userRole => roles!.find(role => role === userRole) != null)
-
-	const isAuthenticated = true;
-
-	const areRolesRequired = false;
-	const areRolesValid = true;
+	const isRoleRequired = role != null;
+	const isRoleValid = isRoleRequired && user.data && user.data.role === role;
 
 	if (!isAuthenticated) {
 		// save path to redirect the user after login
@@ -46,13 +44,13 @@ const AuthorizedRoute = ({roles, ...rest}: {roles?: number[]} & RouteProps) => {
 			<Redirect
 				from={rest.path!.toString()}
 				to={{
-					pathname: "/login",
+					pathname: "/",
 					state: {referrer: window.location.pathname + window.location.search},
 				}}
 			/>
 		);
 	}
-	if ((isAuthenticated && !areRolesRequired) || (isAuthenticated && areRolesRequired && areRolesValid)) {
+	if ((isAuthenticated && !isRoleRequired) || (isAuthenticated && isRoleRequired && isRoleValid)) {
 		return <Route {...rest} />;
 	} else {
 		return <NotAuthorized />;
