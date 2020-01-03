@@ -20,11 +20,11 @@ export const isAuth = (req: Request, res: Response, next: NextFunction) => {
 		const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
 
 		(req as RequestWithIdentity<ITokenPayload>).identity = payload as ITokenPayload;
+		return next();
 	} catch (err) {
 		console.log(err);
 		res.status(401);
 		res.end();
+		return;
 	}
-
-	return next();
 };

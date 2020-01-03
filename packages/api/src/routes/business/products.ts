@@ -1,8 +1,9 @@
 import notifications from "../repositories/notifications";
-import {Product} from "../../entity/Product";
+import {Product, ProductType} from "../../entity/Product";
 import {NotificationType} from "../../entity/Notification";
 import {User} from "../../entity/User";
-import users from "../repositories/users";
+import userRepository from "../repositories/users";
+import productRepository from "../repositories/products";
 
 const MAX_PACKETS_TEA = 600;
 const MAX_PACKETS_COFFEE = 200;
@@ -13,8 +14,8 @@ async function notifyUsers(product: Product, quantityBefore: number, fromUser: s
 
 	if (quantityBefore < PRODUCT_THRESHOLD && product.quantity >= PRODUCT_THRESHOLD) {
 		//Notify managers
-		toUsers = await users.getAllManagers();
-		const getUser = await users.getOne(fromUser);
+		toUsers = await userRepository.getAllManagers();
+		const getUser = await userRepository.getOne(fromUser);
 
 		notifications.sendNotifications({
 			type: NotificationType.REFILL_DONE,
@@ -25,7 +26,7 @@ async function notifyUsers(product: Product, quantityBefore: number, fromUser: s
 		});
 	} else if (quantityBefore >= PRODUCT_THRESHOLD && product.quantity < PRODUCT_THRESHOLD) {
 		//Notify everybody
-		toUsers = await users.getAll();
+		toUsers = await userRepository.getAll();
 
 		notifications.sendNotifications({
 			type: NotificationType.LOW_STOCK,
@@ -36,6 +37,26 @@ async function notifyUsers(product: Product, quantityBefore: number, fromUser: s
 	}
 }
 
+async function checkStockLimits(type: ProductType, newQuantity: number, quantityBefore = 0) {
+	const count = await productRepository.getAllByTypeCount(type);
+	let overflow = count - quantityBefore + newQuantity;
+
+	if (type === ProductType.COFFEE) {
+		overflow = MAX_PACKETS_COFFEE - overflow;
+		if (overflow >= 0) {
+			return {ok: true};
+		}
+	} else if (type === ProductType.TEA) {
+		overflow = MAX_PACKETS_TEA - overflow;
+		if (overflow >= 0) {
+			return {ok: true};
+		}
+	}
+
+	return {ok: false, overflow};
+}
+
 export default {
 	notifyUsers,
+	checkStockLimits,
 };

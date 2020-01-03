@@ -37,7 +37,7 @@ async function geAllById(userId: string) {
 		return await notificationsRepository.find({
 			relations: ["product", "to_user", "from_user"],
 			where: {to_user: {id: userId}},
-			order: {updated_at: "DESC"},
+			order: {created_at: "DESC"},
 		});
 	} catch (error) {
 		return null;

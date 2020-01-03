@@ -1,13 +1,28 @@
 import {getManager} from "typeorm";
-import {Product} from "../../entity/Product";
+import {Product, ProductType} from "../../entity/Product";
 import {IProductCreateRequest, IProductUpdateRequest} from "../types/products/request";
 
 async function getAll() {
 	try {
 		const productsRepository = getManager().getRepository(Product);
-		return await productsRepository.find();
+		return await productsRepository.find({order: {created_at: "DESC"}});
 	} catch (error) {
 		return [];
+	}
+}
+
+async function getAllByTypeCount(type: ProductType) {
+	try {
+		const res = await getManager()
+			.getRepository(Product)
+			.createQueryBuilder("product")
+			.select("SUM(quantity)", "sum")
+			.where("type = :type", {type: type})
+			.getRawOne();
+		// .reduce((acc: any, cur:any) => console.log(cur),0)
+		return parseInt((res as any).sum);
+	} catch (error) {
+		return 0;
 	}
 }
 
@@ -65,6 +80,7 @@ async function updateOne(id: string, item: IProductUpdateRequest) {
 export default {
 	getAll,
 	getOne,
+	getAllByTypeCount,
 	createOne,
 	deleteOne,
 	updateOne,

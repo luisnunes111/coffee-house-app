@@ -59,3 +59,8 @@ export class Product extends BaseEntity {
 		this.id = v4();
 	}
 }
+
+export const getTypeName = (type: ProductType) => {
+	if (type === ProductType.TEA) return "Tea";
+	else return "Coffee";
+};

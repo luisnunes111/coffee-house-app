@@ -6,6 +6,9 @@ import {IProductCreateRequest, IProductUpdateRequest} from "../types/products/re
 import business from "../business/products";
 import {RequestWithIdentity} from "../middlewares/isAuth";
 import {ITokenPayload} from "../../services/auth";
+import {ProductType, getTypeName} from "../../entity/Product";
+import {AsyncParser, parse, parseAsync} from "json2csv";
+import stream from "stream";
 
 async function getAll(_: Request, res: Response) {
 	try {
@@ -41,6 +44,15 @@ async function createOne(req: Request, res: Response) {
 
 		if (!isValid) {
 			return res.status(400).send({success: false, error: msgs.generic400});
+		}
+		const limits = await business.checkStockLimits(req.body.type, req.body.quantity);
+		if (limits.ok === false) {
+			return res.status(406).send({
+				success: false,
+				error: `The store house can't store that quantity for ${getTypeName(
+					req.body.type,
+				)} packets. The limit was exceeded by ${Math.abs(limits.overflow!)}.`,
+			});
 		}
 
 		const newPost = await productRepository.createOne(req.body as IProductCreateRequest);
@@ -90,6 +102,16 @@ async function updateOne(req: Request, res: Response) {
 			return res.status(404).send({success: false, error: msgs.generic404});
 		}
 
+		const limits = await business.checkStockLimits(currentProduct.type, req.body.quantity, currentProduct.quantity);
+		if (limits.ok === false) {
+			return res.status(406).send({
+				success: false,
+				error: `The store house can't store that quantity for ${getTypeName(
+					currentProduct.type,
+				)} packets. The limit was exceeded by ${Math.abs(limits.overflow!)}.`,
+			});
+		}
+
 		const result = await productRepository.updateOne(id, req.body as IProductUpdateRequest);
 
 		if (result) {
@@ -103,13 +125,32 @@ async function updateOne(req: Request, res: Response) {
 	return res.status(500).send({success: false});
 }
 
-//todo
-export function exportList(req: Request, res: Response) {
+async function exportList(req: Request, res: Response) {
 	try {
+		const fields = ["id", "name", "description", "quantity", "type", "created_at", "updated_at"];
+		const opts = {fields};
+
+		const products = await productRepository.getAll();
+		// const csv = parse(products, opts);
+		let csv;
+		try {
+			csv = await parseAsync(products, opts);
+		} catch (error) {
+			console.log(error);
+			// return res.status(500).end();
+			return;
+		}
+
+		// res.attachment("csv" + Date.now() + ".csv");
+		// res.setHeader("Content-Type", "text/csv");
+		res.setHeader("Content-Type", "application/octet-stream");
+		res.setHeader("Content-disposition", "attachment; filename=data.csv");
+		res.status(200).send(csv);
+
+		console.log("csv", csv);
 	} catch (error) {
 		console.log(error);
 	}
-	return res.status(500).send({success: false, error: msgs.generic500});
 }
 
 export default {
