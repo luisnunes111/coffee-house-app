@@ -1,8 +1,12 @@
 import products from "./models/products";
+import notifications from "./models/notifications";
+import user from "./models/user";
 import axios, {AxiosInstance, AxiosRequestConfig} from "axios";
 
 const API = {
 	products: products,
+	notifications: notifications,
+	user: user,
 };
 export default API;
 

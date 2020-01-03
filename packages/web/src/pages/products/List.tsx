@@ -1,4 +1,4 @@
-import {Button, PageHeader, Table, Tag} from "antd";
+import {Button, PageHeader, Table, Tag, Badge, Spin} from "antd";
 import React, {useEffect} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {RouteComponentProps} from "react-router-dom";
@@ -55,7 +55,7 @@ const ListContent: React.FC<IListContent> = React.memo(props => {
 			</>
 		);
 	} else if (!items) {
-		return <p>loading...</p>;
+		return <Spin size={"large"} />;
 	} else if (items?.length === 0) {
 		return <p>No Products were found.</p>;
 	} else {
@@ -67,7 +67,7 @@ const ListContent: React.FC<IListContent> = React.memo(props => {
 				onRow={(record, rowIndex) => {
 					return {
 						onClick: event => {
-							push("/product/" + record.id);
+							push(`/product/${record.id}/details/`);
 						},
 					};
 				}}
@@ -86,6 +86,19 @@ const columns = [
 		title: "Quantity",
 		dataIndex: "quantity",
 		key: "quantity",
+		render: (quantity: number) => (
+			<span
+				style={{
+					backgroundColor: quantity >= 45 ? "#fff" : "#f5222d",
+					color: quantity >= 45 ? "#999" : "#fff",
+					boxShadow: "rgb(217, 217, 217) 0px 0px 2px 3px",
+					borderRadius: 10,
+					lineHeight: "20px",
+					padding: "0px 6px",
+				}}>
+				{quantity}
+			</span>
+		),
 	},
 	{
 		title: "Type",

@@ -1,7 +1,19 @@
 import React from "react";
-import {RouteProps} from "react-router-dom";
+import {RouteComponentProps} from "react-router-dom";
 
-const RegisterPage: React.FC<RouteProps> = React.memo(_ => {
+export enum UserRole {
+	Employee = "employee",
+	Manager = "manager",
+}
+
+export interface IRegisterFormValues {
+	email: string;
+	name: string;
+	password: string;
+	role: UserRole;
+}
+
+const RegisterPage: React.FC<RouteComponentProps> = React.memo(_ => {
 	return <div></div>;
 });
 

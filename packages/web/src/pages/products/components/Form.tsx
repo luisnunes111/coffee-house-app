@@ -1,9 +1,10 @@
-import {Button, Form, Input, Select, InputNumber} from "antd";
+import {Button, Form, Input, Select, InputNumber, PageHeader} from "antd";
 import {FormikErrors, FormikProps, withFormik} from "formik";
 import React from "react";
 import validationSchema from "../../../utils/validations/product";
 import {getProductType} from "../utils/typeConversion";
 import {Typography} from "antd";
+import {useHistory} from "react-router-dom";
 
 const {Title} = Typography;
 const FormItem = Form.Item;
@@ -22,12 +23,15 @@ export interface IProductFormValues {
 }
 const _ProductForm: React.FC<FormikProps<IProductFormValues> & IProductProps> = React.memo(props => {
 	const {values, handleChange, handleBlur, handleSubmit, setFieldValue, touched, errors} = props;
-
+	const history = useHistory();
 	return (
 		<form style={{margin: "auto", width: 400}} onSubmit={handleSubmit}>
-			<Title level={3} style={{paddingTop: 15}}>
-				{props.intialValues ? "Update product" : "Create a new product"}
-			</Title>
+			<PageHeader
+				onBack={() => history.goBack()}
+				style={{padding: 0}}
+				title={props.intialValues ? "Update product" : "Create a new product"}
+			/>
+
 			<FormItem
 				label="Name"
 				help={touched.name && errors.name ? errors.name : ""}
@@ -90,8 +94,5 @@ export const ProductForm = withFormik<IProductProps, IProductFormValues>({
 	mapPropsToValues: props => props.intialValues || {name: "", quantity: 0, type: 0},
 	handleSubmit: async (values, {props, setErrors}) => {
 		const errors = await props.submit(values);
-		if (errors) {
-			setErrors(errors);
-		}
 	},
 })(_ProductForm);

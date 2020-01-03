@@ -4,7 +4,7 @@ import validationMsgs from "./messages";
 export default yup.object().shape({
 	name: yup
 		.string()
-		.min(3, validationMsgs.productNameNotLongEnough)
+		.min(3, validationMsgs.nameNotLongEnough)
 		.max(200)
 		.required(),
 	description: yup.string(),

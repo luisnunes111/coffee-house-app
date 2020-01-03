@@ -6,7 +6,7 @@ import {Routes} from "./routes";
 import {PageErrorBoundary} from "./components/PageErrorBoundary";
 import {Spin} from "antd";
 
-const store = configureStore();
+export const store = configureStore();
 
 const App: React.FC = () => {
 	return (
