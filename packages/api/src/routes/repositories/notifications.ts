@@ -34,7 +34,11 @@ async function getAll() {
 async function geAllById(userId: string) {
 	try {
 		const notificationsRepository = getManager().getRepository(Notification);
-		return await notificationsRepository.find({relations: ["product", "to_user", "from_user"], where: {to_user: {id: userId}}});
+		return await notificationsRepository.find({
+			relations: ["product", "to_user", "from_user"],
+			where: {to_user: {id: userId}},
+			order: {updated_at: "DESC"},
+		});
 	} catch (error) {
 		return null;
 	}
